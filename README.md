@@ -1,5 +1,5 @@
 ## Live Demo
-**You can see the `Battleships Game` Live On:** [Here](https://natitbattleships.netlify.app/)
+**You can see the `Battleships Game` Live On:** [Here](https://natibattleships.netlify.app/)
 
 ## Description
 **Battleships**
