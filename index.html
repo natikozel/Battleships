@@ -1,10 +1,286 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <title>Battle Ships</title>
+    <link rel="stylesheet" href="style.css">
+    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>-->
 </head>
 <body>
+<div id="main">
+    <div class="board">
+        <div class="displays">
+            <div class="top">
+                <span class="aTops hidezero">0</span>
+                <span class="aTops">1</span>
+                <span class="aTops">2</span>
+                <span class="aTops">3</span>
+                <span class="aTops">4</span>
+                <span class="aTops">5</span>
+                <span class="aTops">6</span>
+                <span class="aTops">7</span>
+                <span class="aTops">8</span>
+                <span class="aTops">9</span>
+                <span class="aTops">10</span>
 
+                <ul class="grid">
+                    <li class="points offset1 1">
+                        <span class="hole"></span>
+                    </li>
+                    <li class="points offset1 2">
+                        <span class="hole"></span>
+                    </li>
+                    <li class="points offset1 3">
+                        <span class="hole"></span>
+                    </li>
+                    <li class="points offset1 4">
+                        <span class="hole"></span>
+                    </li>
+                    <li class="points offset1 5"><span class="hole"></span></li>
+                    <li class="points offset1 6"><span class="hole"></span></li>
+                    <li class="points offset1 7"><span class="hole"></span></li>
+                    <li class="points offset1 8"><span class="hole"></span></li>
+                    <li class="points offset1 9"><span class="hole"></span></li>
+                    <li class="points offset1 10"><span class="hole"></span></li>
+                    <li class="points offset2 11"><span class="hole"></span></li>
+                    <li class="points offset2 12"><span class="hole"></span></li>
+                    <li class="points offset2 13"><span class="hole"></span></li>
+                    <li class="points offset2 14"><span class="hole"></span></li>
+                    <li class="points offset2 15"><span class="hole"></span></li>
+                    <li class="points offset2 16"><span class="hole"></span></li>
+                    <li class="points offset2 17"><span class="hole"></span></li>
+                    <li class="points offset2 18"><span class="hole"></span></li>
+                    <li class="points offset2 19"><span class="hole"></span></li>
+                    <li class="points offset2 20"><span class="hole"></span></li>
+                    <li class="points offset2 21"><span class="hole"></span></li>
+                    <li class="points offset2 22"><span class="hole"></span></li>
+                    <li class="points offset2 23"><span class="hole"></span></li>
+                    <li class="points offset2 24"><span class="hole"></span></li>
+                    <li class="points offset2 25"><span class="hole"></span></li>
+                    <li class="points offset2 26"><span class="hole"></span></li>
+                    <li class="points offset2 27"><span class="hole"></span></li>
+                    <li class="points offset2 28"><span class="hole"></span></li>
+                    <li class="points offset2 29"><span class="hole"></span></li>
+                    <li class="points offset2 30"><span class="hole"></span></li>
+                    <li class="points offset2 31"><span class="hole"></span></li>
+                    <li class="points offset2 32"><span class="hole"></span></li>
+                    <li class="points offset2 33"><span class="hole"></span></li>
+                    <li class="points offset2 34"><span class="hole"></span></li>
+                    <li class="points offset2 35"><span class="hole"></span></li>
+                    <li class="points offset2 36"><span class="hole"></span></li>
+                    <li class="points offset2 37"><span class="hole"></span></li>
+                    <li class="points offset2 38"><span class="hole"></span></li>
+                    <li class="points offset2 39"><span class="hole"></span></li>
+                    <li class="points offset2 40"><span class="hole"></span></li>
+                    <li class="points offset2 41"><span class="hole"></span></li>
+                    <li class="points offset2 42"><span class="hole"></span></li>
+                    <li class="points offset2 43"><span class="hole"></span></li>
+                    <li class="points offset2 44"><span class="hole"></span></li>
+                    <li class="points offset2 45"><span class="hole"></span></li>
+                    <li class="points offset2 46"><span class="hole"></span></li>
+                    <li class="points offset2 47"><span class="hole"></span></li>
+                    <li class="points offset2 48"><span class="hole"></span></li>
+                    <li class="points offset2 49"><span class="hole"></span></li>
+                    <li class="points offset2 50"><span class="hole"></span></li>
+                    <li class="points offset2 51"><span class="hole"></span></li>
+                    <li class="points offset2 52"><span class="hole"></span></li>
+                    <li class="points offset2 53"><span class="hole"></span></li>
+                    <li class="points offset2 54"><span class="hole"></span></li>
+                    <li class="points offset2 55"><span class="hole"></span></li>
+                    <li class="points offset2 56"><span class="hole"></span></li>
+                    <li class="points offset2 57"><span class="hole"></span></li>
+                    <li class="points offset2 58"><span class="hole"></span></li>
+                    <li class="points offset2 59"><span class="hole"></span></li>
+                    <li class="points offset2 60"><span class="hole"></span></li>
+                    <li class="points offset2 61"><span class="hole"></span></li>
+                    <li class="points offset2 62"><span class="hole"></span></li>
+                    <li class="points offset2 63"><span class="hole"></span></li>
+                    <li class="points offset2 64"><span class="hole"></span></li>
+                    <li class="points offset2 65"><span class="hole"></span></li>
+                    <li class="points offset2 66"><span class="hole"></span></li>
+                    <li class="points offset2 67"><span class="hole"></span></li>
+                    <li class="points offset2 68"><span class="hole"></span></li>
+                    <li class="points offset2 69"><span class="hole"></span></li>
+                    <li class="points offset2 70"><span class="hole"></span></li>
+                    <li class="points offset2 71"><span class="hole"></span></li>
+                    <li class="points offset2 72"><span class="hole"></span></li>
+                    <li class="points offset2 73"><span class="hole"></span></li>
+                    <li class="points offset2 74"><span class="hole"></span></li>
+                    <li class="points offset2 75"><span class="hole"></span></li>
+                    <li class="points offset2 76"><span class="hole"></span></li>
+                    <li class="points offset2 77"><span class="hole"></span></li>
+                    <li class="points offset2 78"><span class="hole"></span></li>
+                    <li class="points offset2 79"><span class="hole"></span></li>
+                    <li class="points offset2 80"><span class="hole"></span></li>
+                    <li class="points offset2 81"><span class="hole"></span></li>
+                    <li class="points offset2 82"><span class="hole"></span></li>
+                    <li class="points offset2 83"><span class="hole"></span></li>
+                    <li class="points offset2 84"><span class="hole"></span></li>
+                    <li class="points offset2 85"><span class="hole"></span></li>
+                    <li class="points offset2 86"><span class="hole"></span></li>
+                    <li class="points offset2 87"><span class="hole"></span></li>
+                    <li class="points offset2 88"><span class="hole"></span></li>
+                    <li class="points offset2 89"><span class="hole"></span></li>
+                    <li class="points offset2 90"><span class="hole"></span></li>
+                    <li class="points offset2 91"><span class="hole"></span></li>
+                    <li class="points offset2 92"><span class="hole"></span></li>
+                    <li class="points offset2 93"><span class="hole"></span></li>
+                    <li class="points offset2 94"><span class="hole"></span></li>
+                    <li class="points offset2 95"><span class="hole"></span></li>
+                    <li class="points offset2 96"><span class="hole"></span></li>
+                    <li class="points offset2 97"><span class="hole"></span></li>
+                    <li class="points offset2 98"><span class="hole"></span></li>
+                    <li class="points offset2 99"><span class="hole"></span></li>
+                    <li class="points offset2 100"><span class="hole"></span></li>
+                </ul>
+                <span class="aLeft">A</span>
+                <span class="aLeft">B</span>
+                <span class="aLeft">C</span>
+                <span class="aLeft">D</span>
+                <span class="aLeft">E</span>
+                <span class="aLeft">F</span>
+                <span class="aLeft">G</span>
+                <span class="aLeft">H</span>
+                <span class="aLeft">I</span>
+                <span class="aLeft">J</span>
+            </div>
+            <div class="bottom">
+                <span class="aTops hidezero">0</span>
+                <span class="aTops">1</span>
+                <span class="aTops">2</span>
+                <span class="aTops">3</span>
+                <span class="aTops">4</span>
+                <span class="aTops">5</span>
+                <span class="aTops">6</span>
+                <span class="aTops">7</span>
+                <span class="aTops">8</span>
+                <span class="aTops">9</span>
+                <span class="aTops">10</span>
+                <ul class="grid">
+                    <li class="points offset1 1"><span class="hole"></span></li>
+                    <li class="points offset1 2"><span class="hole"></span></li>
+                    <li class="points offset1 3"><span class="hole"></span></li>
+                    <li class="points offset1 4"><span class="hole"></span></li>
+                    <li class="points offset1 5"><span class="hole"></span></li>
+                    <li class="points offset1 6"><span class="hole"></span></li>
+                    <li class="points offset1 7"><span class="hole"></span></li>
+                    <li class="points offset1 8"><span class="hole"></span></li>
+                    <li class="points offset1 9"><span class="hole"></span></li>
+                    <li class="points offset1 10"><span class="hole"></span></li>
+                    <li class="points offset2 11"><span class="hole"></span></li>
+                    <li class="points offset2 12"><span class="hole"></span></li>
+                    <li class="points offset2 13"><span class="hole"></span></li>
+                    <li class="points offset2 14"><span class="hole"></span></li>
+                    <li class="points offset2 15"><span class="hole"></span></li>
+                    <li class="points offset2 16"><span class="hole"></span></li>
+                    <li class="points offset2 17"><span class="hole"></span></li>
+                    <li class="points offset2 18"><span class="hole"></span></li>
+                    <li class="points offset2 19"><span class="hole"></span></li>
+                    <li class="points offset2 20"><span class="hole"></span></li>
+                    <li class="points offset2 21"><span class="hole"></span></li>
+                    <li class="points offset2 22"><span class="hole"></span></li>
+                    <li class="points offset2 23"><span class="hole"></span></li>
+                    <li class="points offset2 24"><span class="hole"></span></li>
+                    <li class="points offset2 25"><span class="hole"></span></li>
+                    <li class="points offset2 26"><span class="hole"></span></li>
+                    <li class="points offset2 27"><span class="hole"></span></li>
+                    <li class="points offset2 28"><span class="hole"></span></li>
+                    <li class="points offset2 29"><span class="hole"></span></li>
+                    <li class="points offset2 30"><span class="hole"></span></li>
+                    <li class="points offset2 31"><span class="hole"></span></li>
+                    <li class="points offset2 32"><span class="hole"></span></li>
+                    <li class="points offset2 33"><span class="hole"></span></li>
+                    <li class="points offset2 34"><span class="hole"></span></li>
+                    <li class="points offset2 35"><span class="hole"></span></li>
+                    <li class="points offset2 36"><span class="hole"></span></li>
+                    <li class="points offset2 37"><span class="hole"></span></li>
+                    <li class="points offset2 38"><span class="hole"></span></li>
+                    <li class="points offset2 39"><span class="hole"></span></li>
+                    <li class="points offset2 40"><span class="hole"></span></li>
+                    <li class="points offset2 41"><span class="hole"></span></li>
+                    <li class="points offset2 42"><span class="hole"></span></li>
+                    <li class="points offset2 43"><span class="hole"></span></li>
+                    <li class="points offset2 44"><span class="hole"></span></li>
+                    <li class="points offset2 45"><span class="hole"></span></li>
+                    <li class="points offset2 46"><span class="hole"></span></li>
+                    <li class="points offset2 47"><span class="hole"></span></li>
+                    <li class="points offset2 48"><span class="hole"></span></li>
+                    <li class="points offset2 49"><span class="hole"></span></li>
+                    <li class="points offset2 50"><span class="hole"></span></li>
+                    <li class="points offset2 51"><span class="hole"></span></li>
+                    <li class="points offset2 52"><span class="hole"></span></li>
+                    <li class="points offset2 53"><span class="hole"></span></li>
+                    <li class="points offset2 54"><span class="hole"></span></li>
+                    <li class="points offset2 55"><span class="hole"></span></li>
+                    <li class="points offset2 56"><span class="hole"></span></li>
+                    <li class="points offset2 57"><span class="hole"></span></li>
+                    <li class="points offset2 58"><span class="hole"></span></li>
+                    <li class="points offset2 59"><span class="hole"></span></li>
+                    <li class="points offset2 60"><span class="hole"></span></li>
+                    <li class="points offset2 61"><span class="hole"></span></li>
+                    <li class="points offset2 62"><span class="hole"></span></li>
+                    <li class="points offset2 63"><span class="hole"></span></li>
+                    <li class="points offset2 64"><span class="hole"></span></li>
+                    <li class="points offset2 65"><span class="hole"></span></li>
+                    <li class="points offset2 66"><span class="hole"></span></li>
+                    <li class="points offset2 67"><span class="hole"></span></li>
+                    <li class="points offset2 68"><span class="hole"></span></li>
+                    <li class="points offset2 69"><span class="hole"></span></li>
+                    <li class="points offset2 70"><span class="hole"></span></li>
+                    <li class="points offset2 71"><span class="hole"></span></li>
+                    <li class="points offset2 72"><span class="hole"></span></li>
+                    <li class="points offset2 73"><span class="hole"></span></li>
+                    <li class="points offset2 74"><span class="hole"></span></li>
+                    <li class="points offset2 75"><span class="hole"></span></li>
+                    <li class="points offset2 76"><span class="hole"></span></li>
+                    <li class="points offset2 77"><span class="hole"></span></li>
+                    <li class="points offset2 78"><span class="hole"></span></li>
+                    <li class="points offset2 79"><span class="hole"></span></li>
+                    <li class="points offset2 80"><span class="hole"></span></li>
+                    <li class="points offset2 81"><span class="hole"></span></li>
+                    <li class="points offset2 82"><span class="hole"></span></li>
+                    <li class="points offset2 83"><span class="hole"></span></li>
+                    <li class="points offset2 84"><span class="hole"></span></li>
+                    <li class="points offset2 85"><span class="hole"></span></li>
+                    <li class="points offset2 86"><span class="hole"></span></li>
+                    <li class="points offset2 87"><span class="hole"></span></li>
+                    <li class="points offset2 88"><span class="hole"></span></li>
+                    <li class="points offset2 89"><span class="hole"></span></li>
+                    <li class="points offset2 90"><span class="hole"></span></li>
+                    <li class="points offset2 91"><span class="hole"></span></li>
+                    <li class="points offset2 92"><span class="hole"></span></li>
+                    <li class="points offset2 93"><span class="hole"></span></li>
+                    <li class="points offset2 94"><span class="hole"></span></li>
+                    <li class="points offset2 95"><span class="hole"></span></li>
+                    <li class="points offset2 96"><span class="hole"></span></li>
+                    <li class="points offset2 97"><span class="hole"></span></li>
+                    <li class="points offset2 98"><span class="hole"></span></li>
+                    <li class="points offset2 99"><span class="hole"></span></li>
+                    <li class="points offset2 100"><span class="hole"></span></li>
+                </ul>
+                <span class="aLeft">A</span>
+                <span class="aLeft">B</span>
+                <span class="aLeft">C</span>
+                <span class="aLeft">D</span>
+                <span class="aLeft">E</span>
+                <span class="aLeft">F</span>
+                <span class="aLeft">G</span>
+                <span class="aLeft">H</span>
+                <span class="aLeft">I</span>
+                <span class="aLeft">J</span></div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="topPanel">
+            <div class="layout">
+                <div class='buttons one'>Start Game</div>
+                <!--                <div class='buttons multi'>Multi Player</div>-->
+                <div class='buttons back'>Go Back</div>
+            </div>
+        </div>
+        <div class='console'>
+            <span class='text'></span></div>
+    </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
