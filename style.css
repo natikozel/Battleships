@@ -92,8 +92,11 @@ html {
     border-right: 1px solid #8DEEEE;
     display: inline-block;
 
-
 }
+
+/*.points:hover {*/
+/*    background: #dd3224;*/
+/*}*/
 
 .highlight {
     background: rgba(144,144,144,0.9);
@@ -199,6 +202,10 @@ html {
 
 .frigate {
     background: rgba(100,100,100,0.7);
+}
+
+.reset, .pmo, .random, .horizontal, .vertical {
+    display: none;
 }
 
 .one {
