@@ -1,12 +1,14 @@
 class Battleships {
     constructor() {
-        this.startGameBtn = document.querySelector('.start')
-        this.pmoBtn = document.querySelector('.pmo')
-        this.randomBtn = document.querySelector('.random')
-        this.horizontalBtn = document.querySelector('.horizontal')
-        this.verticalBtn = document.querySelector('.vertical')
-        this.resetBtn = document.querySelector('.reset')
-        this.consoleText = document.querySelector('.text')
+        this.startGameBtn = document.querySelector('.start');
+        this.pmoBtn = document.querySelector('.pmo');
+        this.randomBtn = document.querySelector('.random');
+        this.horizontalBtn = document.querySelector('.horizontal');
+        this.verticalBtn = document.querySelector('.vertical');
+        this.resetBtn = document.querySelector('.reset');
+        this.consoleText = document.querySelector('.text');
+        this.enemyTargets = [];
+        this.allyTargets = [];
         this.ships = [
             {
                 name: "carrier",
@@ -38,7 +40,7 @@ class Battleships {
                 placed: false,
                 defeated: false,
             },
-        ]
+        ];
         this.output = {
             welcome: " > Welcome to BattleShip.  Use the menu above to get started.",
             not: " > This option is not currently available.",
@@ -51,18 +53,18 @@ class Battleships {
             miss: name => " > " + name + " missed!",
             sunk: (user, type) => " > " + user + "'s " + type + " was sunk!",
             lost: name => " > " + name + " has lost his fleet!!  Game Over.",
-        }
+        };
         this.consoleText.textContent = this.output.welcome;
         this.layout = document.querySelector('.layout');
-        this.topBoard = document.querySelector('.top')
-        this.bottomBoard = document.querySelector('.bottom')
+        this.topBoard = document.querySelector('.top');
+        this.bottomBoard = document.querySelector('.bottom');
         this.vertical = false;
         this.horizontal = true;
-        this.startGameBtn.addEventListener('click', this.startGame.bind(this))
-        this.resetBtn.addEventListener('click', this.reset.bind(this))
-        this.pmoBtn.addEventListener('click', this.placeOnMyOwn.bind(this))
-        this.horizontalBtn.addEventListener('click', this.changeHorizontal.bind(this))
-        this.verticalBtn.addEventListener('click', this.changeVertical.bind(this))
+        this.startGameBtn.addEventListener('click', this.startGame.bind(this));
+        this.resetBtn.addEventListener('click', this.reset.bind(this));
+        this.pmoBtn.addEventListener('click', this.placeOnMyOwn.bind(this));
+        this.horizontalBtn.addEventListener('click', this.changeHorizontal.bind(this));
+        this.verticalBtn.addEventListener('click', this.changeVertical.bind(this));
 
     }
 
@@ -71,128 +73,265 @@ class Battleships {
     }
 
     startGame() {
-        this.startGameBtn.style.display = 'none'
-        this.pmoBtn.style.display = 'flow'
-        this.randomBtn.style.display = 'flow'
-        this.resetBtn.style.display = 'flow'
-        this.consoleText.textContent = this.output.player1
+        this.startGameBtn.style.display = 'none';
+        this.pmoBtn.style.display = 'flow';
+        this.randomBtn.style.display = 'flow';
+        this.resetBtn.style.display = 'flow';
+        this.consoleText.textContent = this.output.player1;
     }
 
 
     handlePlacement = e => {
 
         if (e.target.classList.contains('points')) {
-            let point = e.target
-            const pointNum = [...point.classList].filter(cl => isFinite(cl))
-            let nextShip = this.ships.find(ship => !ship.placed)
-            let siblings = []
+            let point = e.target;
+            const pointNum = [...point.classList].filter(cl => isFinite(cl));
+            let nextShip = this.ships.find(ship => !ship.placed);
+            let siblings = [];
             const doesFit = this.horizontal ?
                 (pointNum % 10) - 1 + nextShip.space <= 10 && pointNum % 10 !== 0
-                : Math.trunc((pointNum - 1) / 10) + nextShip.space <= 10
+                : Math.trunc((pointNum - 1) / 10) + nextShip.space <= 10;
             if (doesFit) {
                 if (this.horizontal) {
-                    siblings = []
-                    let sibling = point
+                    siblings = [];
+                    let sibling = point;
                     for (let i = 0; i < nextShip.space; i++) {
-                        siblings.push(sibling)
-                        sibling = sibling.nextElementSibling
+                        siblings.push(sibling);
+                        sibling = sibling.nextElementSibling;
                     }
                 }
                 if (this.vertical) {
-                    siblings = []
-                    let sibling = point
+                    siblings = [];
+                    let sibling = point;
                     for (let i = 0; i < nextShip.space; i++) {
-                        siblings.push(sibling)
-                        const siblingNum = [...sibling.classList].filter(cl => isFinite(cl))
-                        sibling = document.getElementsByClassName(`${10 + +siblingNum}`)[0]
+                        siblings.push(sibling);
+                        const siblingNum = [...sibling.classList].filter(cl => isFinite(cl));
+                        sibling = document.getElementsByClassName(`${10 + +siblingNum}`)[0];
                     }
                 }
+
+
+                const onClick = () => {
+                    if (siblings.every(s => {
+                        const allClasses = [...s.classList];
+                        const lastClass = allClasses[allClasses.length - 1];
+                        return this.ships.every(ship => ship.name !== lastClass);
+                    })) {
+                        siblings.forEach(node => {
+                            node.classList.add(`${nextShip.name}`);
+                            node.firstChild.classList.remove('hole');
+                        });
+                        this.ships.find(ship => ship.name === nextShip.name).placed = true;
+                        this.consoleText.textContent = this.output.placed(nextShip.name);
+                        this.allyTargets.push({
+                            spaces: [...siblings],
+                            name: nextShip.name
+                        });
+                        nextShip = this.ships.find(ship => !ship.placed);
+                        this.checkIfReady();
+                    }
+                };
 
                 const onEnter = () => {
                     if (siblings.every(s => [...s.classList].length === 3)) {
                         siblings.forEach(node => {
-                            node.classList.add('highlight')
-                        })
+                            node.classList.add('highlight');
+                        });
+                        point.addEventListener('click', onClick);
                     }
-                }
+                };
                 const onLeave = () => {
                     siblings.forEach(node => {
-                        node.classList.remove('highlight')
-                    })
-                    point.removeEventListener('mouseenter', onEnter)
-                }
+                        node.classList.remove('highlight');
+                    });
+                    point.removeEventListener('mouseenter', onEnter);
+                    point.removeEventListener('click', onClick);
+                };
 
-                const onClick = () => {
-                    if (siblings.every(s => {
-                        const allClasses = [...s.classList]
-                        const lastClass = allClasses[allClasses.length -1]
-                        return this.ships.every(ship => ship.name !== lastClass)
-                    })) {
-                        siblings.forEach(node => {
-                            node.classList.add(`${nextShip.name}`)
-                            node.firstChild.classList.remove('hole')
-                        })
-                        this.ships.find(ship => ship.name === nextShip.name).placed = true;
-                        this.consoleText.textContent = this.output.placed(nextShip.name)
-                        nextShip = this.ships.find(ship => !ship.placed)
-                        this.checkIfReady();
-                    }
-                }
-
-                point.addEventListener('mouseenter', onEnter)
-                point.addEventListener('mouseleave', onLeave)
-                point.addEventListener('click', onClick)
+                point.addEventListener('mouseenter', onEnter);
+                point.addEventListener('mouseleave', onLeave);
             }
         }
 
-    }
+    };
 
     checkIfReady() {
         if (this.ships.every(ship => ship.placed)) {
-            this.consoleText.textContent = this.output.start
-            this.horizontalBtn.style.display = 'none'
-            this.verticalBtn.style.display = 'none'
-            this.topBoard.removeEventListener('mouseover', this.handlePlacement)
-            // this.randomizeEnemyShips()
-            // this.launchGame()
+            this.consoleText.textContent = this.output.start;
+            this.horizontalBtn.style.display = 'none';
+            this.verticalBtn.style.display = 'none';
+            this.topBoard.removeEventListener('mouseover', this.handlePlacement);
+            this.ships.forEach(ship => ship.placed = false);
+            this.randomizeEnemyShips();
+            this.launchGame();
         }
     }
 
     changeHorizontal() {
-        this.horizontal = true
+        this.horizontal = true;
         this.vertical = false;
     }
 
     changeVertical() {
-        this.vertical = true
-        this.horizontal = false
+        this.vertical = true;
+        this.horizontal = false;
+    }
+
+    checkIfShipDown = (ships, enemy, board) => {
+        if (ships.space.every(ship => [...ship.childNodes[0].classList].includes('hit')))
+            this.consoleText.textContent = this.output.sunk(enemy, ships.name);
+    };
+
+    handleAllyTurn = (e) => {
+
+        console.log(e.target.classList);
+        if (e.target.classList.contains('points')) {
+            const point = e.target;
+            console.log('im innnn');
+            const onEnter = () => {
+                if (!point.classList.contains('used')) {
+                    console.log("I'm in");
+                    point.classList.add('target');
+                    point.addEventListener('click', hitTarget);
+                }
+            };
+
+            const onLeave = () => {
+                point.classList.remove('target');
+                if (!point.classList.contains('used')) {
+                    point.removeEventListener('mouseenter', onEnter);
+                    point.removeEventListener('click', hitTarget);
+                }
+            };
+
+
+            const hitTarget = (e) => {
+                const target = [...e.target.classList].includes('points') ? e.target : e.target.parentNode;
+                console.log(target);
+                // if (this.enemyTargets.includes(target)) {
+                const pointHit = this.enemyTargets.find(ships => ships.space.includes(target));
+                if (pointHit) {
+                    target.childNodes[0].classList.add('hit');
+                    this.consoleText.textContent = this.output.hit('Player 2');
+                    this.checkIfShipDown(pointHit, 'Player 2', this.bottomBoard);
+                    this.checkIfGameOver(this.enemyTargets, 'Player 2');
+                } else {
+                    target.childNodes[0].classList.add('miss');
+                    this.consoleText.textContent = this.output.miss('You');
+                }
+                target.classList.add('used');
+                point.removeEventListener('mouseenter', onEnter);
+                point.removeEventListener('mouseleave', onLeave);
+                point.removeEventListener('click', hitTarget);
+                point.classList.remove('target');
+                this.bottomBoard.removeEventListener('mouseover', this.handleAllyTurn);
+                setTimeout(this.handleEnemyTurn.bind(this), 500);
+
+            };
+
+            point.addEventListener('mouseenter', onEnter);
+            point.addEventListener('mouseleave', onLeave);
+        }
+    };
+
+    handleEnemyTurn() {
+        console.log("I play");
+        this.bottomBoard.addEventListener('mouseover', this.handleAllyTurn);
     }
 
     launchGame() {
+        console.log(this.enemyTargets);
+        this.bottomBoard.addEventListener('mouseover', this.handleAllyTurn);
+    }
+
+    checkIfGameOver(ships, player) {
+        if (ships.every(ship => ship.space.every(point => [...point.childNodes[0].classList].includes('hit')))) {
+            this.bottomBoard.removeEventListener('mouseover', this.handleAllyTurn);
+            this.consoleText.textContent = this.output.lost(player);
+        }
     }
 
     placeOnMyOwn() {
-        this.consoleText.textContent = this.output.self
-        this.pmoBtn.style.display = 'none'
-        this.randomBtn.style.display = 'none'
-        this.horizontalBtn.style.display = 'flow'
-        this.verticalBtn.style.display = 'flow'
-        this.topBoard.addEventListener('mouseover', this.handlePlacement)
+        this.consoleText.textContent = this.output.self;
+        this.pmoBtn.style.display = 'none';
+        this.randomBtn.style.display = 'none';
+        this.horizontalBtn.style.display = 'flow';
+        this.verticalBtn.style.display = 'flow';
+        this.topBoard.addEventListener('mouseover', this.handlePlacement);
 
     }
 
     randomizeEnemyShips() {
+
+        while (this.ships.some(ship => ship.placed === false)) {
+            let pointNum = Math.trunc(Math.random() * 100) + 1;
+            Math.trunc(Math.random() * 2) + 1 === 1 ? this.changeHorizontal() : this.changeVertical();
+            let nextShip = this.ships.find(ship => !ship.placed);
+            const doesFit = this.horizontal ?
+                (pointNum % 10) - 1 + nextShip.space <= 10 && pointNum % 10 !== 0
+                : Math.trunc((pointNum - 1) / 10) + nextShip.space <= 10;
+            const allPoints = [...document.querySelector('.bottom').querySelector('.grid').childNodes];
+            let point;
+            for (let i = 0; i < allPoints.length; i++) {
+                let classNames = allPoints[i].classList;
+                if (classNames && classNames.contains(`${pointNum}`)) {
+                    point = allPoints[i];
+                    break;
+                }
+            }
+
+            const siblings = [];
+            if (doesFit) {
+                if (this.horizontal) {
+                    let sibling = point;
+                    for (let i = 0; i < nextShip.space; i++) {
+                        siblings.push(sibling);
+                        sibling = sibling.nextElementSibling;
+                    }
+                }
+                if (this.vertical) {
+                    let sibling = point;
+                    for (let i = 0; i < nextShip.space; i++) {
+                        siblings.push(sibling);
+                        const siblingNum = [...sibling.classList].filter(cl => isFinite(cl));
+                        sibling = document.querySelector('.bottom').getElementsByClassName(`${10 + +siblingNum}`)[0];
+                    }
+                }
+                if (siblings.every(s => !this.enemyTargets.includes(s))) {
+                    // if (siblings.every(s => {
+                    //     const allClasses = [...s.classList]
+                    //     const lastClass = allClasses[allClasses.length - 1]
+                    //     return this.ships.every(ship => ship.name !== lastClass)
+                    // })) {
+
+                    // siblings.forEach(node => {
+                    //     node.classList.add(`${nextShip.name}`)
+                    //     node.firstChild.classList.remove('hole')
+                    // })
+                    this.ships.find(ship => ship.name === nextShip.name).placed = true;
+                    this.enemyTargets.push({
+                        space: [...siblings],
+                        name: nextShip.name
+                    });
+                    nextShip = this.ships.find(ship => !ship.placed);
+                }
+            }
+        }
     }
 
     reset() {
-        this.startGameBtn.style.display = 'flow'
-        this.pmoBtn.style.display = 'none'
-        this.randomBtn.style.display = 'none'
-        this.horizontalBtn.style.display = 'none'
-        this.verticalBtn.style.display = 'none'
-        this.resetBtn.style.display = 'none'
-        this.ships.forEach(ship => ship.placed = false)
+        this.startGameBtn.style.display = 'flow';
+        this.pmoBtn.style.display = 'none';
+        this.randomBtn.style.display = 'none';
+        this.horizontalBtn.style.display = 'none';
+        this.verticalBtn.style.display = 'none';
+        this.resetBtn.style.display = 'none';
+        this.ships.forEach(ship => ship.placed = false);
+        this.consoleText.textContent = this.output.welcome;
+        this.enemyTargets = [];
+        this.allyTargets = [];
         this.topBoard.innerHTML = '';
+        this.bottomBoard.innerHTML = '';
         const HTMLelement = `
             <span class="aTops hidezero">0</span>
                 <span class="aTops">1</span>
@@ -317,10 +456,12 @@ class Battleships {
                 <span class="aLeft">G</span>
                 <span class="aLeft">H</span>
                 <span class="aLeft">I</span>
-                <span class="aLeft">J</span>`
-        this.topBoard.insertAdjacentHTML('afterbegin', HTMLelement)
+                <span class="aLeft">J</span>`;
+        this.topBoard.insertAdjacentHTML('afterbegin', HTMLelement);
+        this.bottomBoard.insertAdjacentHTML('afterbegin', HTMLelement);
+
     }
 
 }
 
-const game = new Battleships()
+const game = new Battleships();
