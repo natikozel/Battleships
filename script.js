@@ -8,6 +8,8 @@ class Battleships {
         this.resetBtn = document.querySelector('.reset');
         this.consoleText = document.querySelector('.text');
         this.enemyTargets = [];
+        this.triggerAlgorithm = false;
+        this.enemyAttacks = []
         this.allyTargets = [];
         this.ships = [
             {
@@ -124,7 +126,7 @@ class Battleships {
                         this.ships.find(ship => ship.name === nextShip.name).placed = true;
                         this.consoleText.textContent = this.output.placed(nextShip.name);
                         this.allyTargets.push({
-                            spaces: [...siblings],
+                            space: [...siblings],
                             name: nextShip.name
                         });
                         nextShip = this.ships.find(ship => !ship.placed);
@@ -177,20 +179,23 @@ class Battleships {
         this.horizontal = false;
     }
 
-    checkIfShipDown = (ships, enemy, board) => {
-        if (ships.space.every(ship => [...ship.childNodes[0].classList].includes('hit')))
+    checkIfShipDown = (ships, enemy) => {
+        if (ships.space.every(ship => [...ship.childNodes[0].classList].includes('hit'))) {
             this.consoleText.textContent = this.output.sunk(enemy, ships.name);
+            if (enemy === 'Player 1') {
+                this.triggerAlgorithm = false;
+                // this.enemyAttacks = [];
+            }
+        }
     };
 
     handleAllyTurn = (e) => {
 
-        console.log(e.target.classList);
-        if (e.target.classList.contains('points')) {
-            const point = e.target;
-            console.log('im innnn');
+        const classes = e.target.classList
+        if (classes.contains('points') || classes.contains('hole')) {
+            const point = classes.contains('points') ? e.target : e.target.parentNode;
             const onEnter = () => {
                 if (!point.classList.contains('used')) {
-                    console.log("I'm in");
                     point.classList.add('target');
                     point.addEventListener('click', hitTarget);
                 }
@@ -208,7 +213,6 @@ class Battleships {
             const hitTarget = (e) => {
                 const target = [...e.target.classList].includes('points') ? e.target : e.target.parentNode;
                 console.log(target);
-                // if (this.enemyTargets.includes(target)) {
                 const pointHit = this.enemyTargets.find(ships => ships.space.includes(target));
                 if (pointHit) {
                     target.childNodes[0].classList.add('hit');
@@ -228,13 +232,114 @@ class Battleships {
                 setTimeout(this.handleEnemyTurn.bind(this), 500);
 
             };
-
             point.addEventListener('mouseenter', onEnter);
             point.addEventListener('mouseleave', onLeave);
         }
     };
 
+    CPUAlgo() {
+        const lastHit = this.enemyAttacks.findLast(attack => attack.hit)
+        const lastHitIndex = this.enemyAttacks.indexOf(lastHit);
+        const lastMiss = this.enemyAttacks.findLast(attack => !attack.hit)
+        let lastMissIndex;
+        if (lastMiss)
+            lastMissIndex = this.enemyAttacks.indexOf(lastMiss)
+
+        const moveRight = () => {
+            let i = 1;
+            if ((lastHit.point + i) % 10 === 0) {
+                return lastHit.point + i
+            } else {
+                while ((lastHit.point + i) % 10 !== 0 && this.enemyAttacks.find(attack => attack.point === lastHit.point + i))
+                    i++
+                return lastHit.point + i;
+            }
+        }
+
+        const moveLeft = () => {
+            let i = 1;
+            if ((lastHit.point - i) % 10 === 1) {
+                return lastHit.point - i
+            } else {
+                while ((lastHit.point - i) % 10 !== 1 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i))
+                    i++
+                return lastHit.point - i;
+            }
+        }
+        const moveUp = () => {
+            let i = 10;
+            if ((lastHit.point - i) <= 0) {
+                return lastHit.point - i
+            } else {
+                while ((lastHit.point - i) > 10  && this.enemyAttacks.find(attack => attack.point === lastHit.point - i))
+                    i+=10
+                return lastHit.point - i;
+            }
+        }
+
+        const moveDown = () => {
+            let i = 1;
+            if ((lastHit.point - i) % 10 === 1) {
+                return lastHit.point - i
+            } else {
+                while ((lastHit.point - i) % 10 !== 1 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i))
+                    i++
+                return lastHit.point - i;
+            }
+        }
+
+
+        if (lastHit.point % 10 !== 0) {
+            let i = 1;
+            if ((lastHit.point + i) % 10 !== 0)
+                while (this.enemyAttacks.find(attack => attack.point === lastHit.point + i) && (lastHit.point + i) % 10 !== 0)
+                    i++
+            return lastHit.point + i;
+
+        } else {
+            return lastHit.point - 1;
+        }
+
+
+    }
+
     handleEnemyTurn() {
+
+        const allPoints = [...document.querySelector('.top').querySelector('.grid').childNodes];
+        let point;
+        let pointNum;
+        while (!point || point.classList.contains('used')) {
+            if (!this.triggerAlgorithm)
+                pointNum = Math.trunc(Math.random() * 100) + 1;
+            else
+                pointNum = this.CPUAlgo();
+            for (let i = 0; i < allPoints.length; i++) {
+                let classNames = allPoints[i].classList;
+                if (classNames && classNames.contains(`${pointNum}`)) {
+                    point = allPoints[i];
+                    break;
+                }
+            }
+        }
+        point.classList.add('used')
+        const pointHit = this.allyTargets.find(ships => ships.space.includes(point));
+        if (pointHit) {
+            point.childNodes[0].classList.add('hit');
+            this.consoleText.textContent = this.output.hit('Player 1');
+            this.checkIfShipDown(pointHit, 'Player 1');
+            this.checkIfGameOver(this.allyTargets, 'Player 1');
+            if (!this.triggerAlgorithm)
+                this.triggerAlgorithm = true;
+            this.enemyAttacks.push({point: pointNum, hit: true})
+        } else {
+            point.childNodes[0].classList.add('miss');
+            this.consoleText.textContent = this.output.miss('CPU');
+            this.enemyAttacks.push({point: pointNum, hit: false})
+        }
+
+        console.log(this.allyTargets)
+
+
         console.log("I play");
         this.bottomBoard.addEventListener('mouseover', this.handleAllyTurn);
     }
