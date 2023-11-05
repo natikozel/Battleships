@@ -180,7 +180,7 @@ class Battleships {
             this.consoleText.textContent = this.output.sunk(enemy, ships.name);
             if (enemy === 'Player 1') {
                 this.triggerAlgorithm = false;
-                this.enemyAttacks = [];
+                // this.enemyAttacks = [];
             }
         }
     };
@@ -243,10 +243,12 @@ class Battleships {
 
         const moveRight = () => {
             let i = 1;
-
+            let reds = 0;
             for (let j = 0; j < 5; j++) {
-                if ((lastHit.point + i) % 10 !== 1 && this.enemyAttacks.find(attack => attack.point === lastHit.point + i && attack.hit))
+                if ((lastHit.point + i) % 10 !== 1 && this.enemyAttacks.find(attack => attack.point === lastHit.point + i && attack.hit)) {
                     i++
+                    reds++
+                }
 
                 if ((lastHit.point + i) % 10 === 1 || this.enemyAttacks.find(attack => attack.point === lastHit.point + i && !attack.hit))
                     return false;
@@ -259,12 +261,14 @@ class Battleships {
 
         const moveLeft = () => {
             let i = 1;
-
+            let reds = 0;
             for (let j = 0; j < 5; j++) {
-                if ((lastHit.point - i) % 10 !== 0 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i && attack.hit))
+                if ((lastHit.point - i) % 10 !== 0 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i && attack.hit)) {
                     i++
+                    reds++
+                }
 
-                if ((lastHit.point - i) % 10 === 0 || this.enemyAttacks.find(attack => attack.point === lastHit.point - i && !attack.hit))
+                if ((lastHit.point - i) % 10 === 0 || this.enemyAttacks.find(attack => attack.point === lastHit.point - i && !attack.hit) || reds === 5)
                     return false;
             }
 
@@ -274,12 +278,14 @@ class Battleships {
         }
         const moveUp = () => {
             let i = 10;
-
+            let reds = 0;
             for (let j = 0; j < 5; j++) {
-                if ((lastHit.point - i) >= 0 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i && attack.hit))
+                if ((lastHit.point - i) > 0 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i && attack.hit)) {
                     i += 10
+                    reds++
+                }
 
-                if ((lastHit.point - i) < 0 || this.enemyAttacks.find(attack => attack.point === lastHit.point - i && !attack.hit))
+                if ((lastHit.point - i) <= 0 || this.enemyAttacks.find(attack => attack.point === lastHit.point - i && !attack.hit))
                     return false;
             }
 
@@ -290,10 +296,12 @@ class Battleships {
 
         const moveDown = () => {
             let i = 10;
-
+            let reds = 0;
             for (let j = 0; j < 5; j++) {
-                if ((lastHit.point + i) <= 100 && this.enemyAttacks.find(attack => attack.point === lastHit.point + i && attack.hit))
+                if ((lastHit.point + i) <= 100 && this.enemyAttacks.find(attack => attack.point === lastHit.point + i && attack.hit)) {
                     i += 10
+                    reds++
+                }
 
                 if ((lastHit.point + i) > 100 || this.enemyAttacks.find(attack => attack.point === lastHit.point + i && !attack.hit))
                     return false;
