@@ -70,10 +70,6 @@ class Battleships {
 
     }
 
-
-    nextTurn() {
-    }
-
     startGame() {
         this.startGameBtn.style.display = 'none';
         this.pmoBtn.style.display = 'flow';
@@ -184,7 +180,7 @@ class Battleships {
             this.consoleText.textContent = this.output.sunk(enemy, ships.name);
             if (enemy === 'Player 1') {
                 this.triggerAlgorithm = false;
-                // this.enemyAttacks = [];
+                this.enemyAttacks = [];
             }
         }
     };
@@ -194,6 +190,7 @@ class Battleships {
         const classes = e.target.classList
         if (classes.contains('points') || classes.contains('hole')) {
             const point = classes.contains('points') ? e.target : e.target.parentNode;
+
             const onEnter = () => {
                 if (!point.classList.contains('used')) {
                     point.classList.add('target');
@@ -205,6 +202,7 @@ class Battleships {
                 point.classList.remove('target');
                 if (!point.classList.contains('used')) {
                     point.removeEventListener('mouseenter', onEnter);
+                    point.removeEventListener('mouseleave', onLeave);
                     point.removeEventListener('click', hitTarget);
                 }
             };
@@ -218,7 +216,8 @@ class Battleships {
                     target.childNodes[0].classList.add('hit');
                     this.consoleText.textContent = this.output.hit('Player 2');
                     this.checkIfShipDown(pointHit, 'Player 2', this.bottomBoard);
-                    this.checkIfGameOver(this.enemyTargets, 'Player 2');
+                    if (this.checkIfGameOver(this.enemyTargets, 'Player 2'))
+                        return
                 } else {
                     target.childNodes[0].classList.add('miss');
                     this.consoleText.textContent = this.output.miss('You');
@@ -239,67 +238,74 @@ class Battleships {
 
     CPUAlgo() {
         const lastHit = this.enemyAttacks.findLast(attack => attack.hit)
-        const lastHitIndex = this.enemyAttacks.indexOf(lastHit);
-        const lastMiss = this.enemyAttacks.findLast(attack => !attack.hit)
-        let lastMissIndex;
-        if (lastMiss)
-            lastMissIndex = this.enemyAttacks.indexOf(lastMiss)
+        let nextNum;
+
 
         const moveRight = () => {
             let i = 1;
-            if ((lastHit.point + i) % 10 === 0) {
-                return lastHit.point + i
-            } else {
-                while ((lastHit.point + i) % 10 !== 0 && this.enemyAttacks.find(attack => attack.point === lastHit.point + i))
+
+            for (let j = 0; j < 5; j++) {
+                if ((lastHit.point + i) % 10 !== 1 && this.enemyAttacks.find(attack => attack.point === lastHit.point + i && attack.hit))
                     i++
-                return lastHit.point + i;
+
+                if ((lastHit.point + i) % 10 === 1 || this.enemyAttacks.find(attack => attack.point === lastHit.point + i && !attack.hit))
+                    return false;
             }
+
+            nextNum = lastHit.point + i;
+            return true;
+
         }
 
         const moveLeft = () => {
             let i = 1;
-            if ((lastHit.point - i) % 10 === 1) {
-                return lastHit.point - i
-            } else {
-                while ((lastHit.point - i) % 10 !== 1 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i))
+
+            for (let j = 0; j < 5; j++) {
+                if ((lastHit.point - i) % 10 !== 0 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i && attack.hit))
                     i++
-                return lastHit.point - i;
+
+                if ((lastHit.point - i) % 10 === 0 || this.enemyAttacks.find(attack => attack.point === lastHit.point - i && !attack.hit))
+                    return false;
             }
+
+            nextNum = lastHit.point - i;
+            return true;
+
         }
         const moveUp = () => {
             let i = 10;
-            if ((lastHit.point - i) <= 0) {
-                return lastHit.point - i
-            } else {
-                while ((lastHit.point - i) > 10  && this.enemyAttacks.find(attack => attack.point === lastHit.point - i))
-                    i+=10
-                return lastHit.point - i;
+
+            for (let j = 0; j < 5; j++) {
+                if ((lastHit.point - i) >= 0 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i && attack.hit))
+                    i += 10
+
+                if ((lastHit.point - i) < 0 || this.enemyAttacks.find(attack => attack.point === lastHit.point - i && !attack.hit))
+                    return false;
             }
+
+            nextNum = lastHit.point - i
+            return true;
+
         }
 
         const moveDown = () => {
-            let i = 1;
-            if ((lastHit.point - i) % 10 === 1) {
-                return lastHit.point - i
-            } else {
-                while ((lastHit.point - i) % 10 !== 1 && this.enemyAttacks.find(attack => attack.point === lastHit.point - i))
-                    i++
-                return lastHit.point - i;
+            let i = 10;
+
+            for (let j = 0; j < 5; j++) {
+                if ((lastHit.point + i) <= 100 && this.enemyAttacks.find(attack => attack.point === lastHit.point + i && attack.hit))
+                    i += 10
+
+                if ((lastHit.point + i) > 100 || this.enemyAttacks.find(attack => attack.point === lastHit.point + i && !attack.hit))
+                    return false;
             }
+
+            nextNum = lastHit.point + i
+            return true;
         }
 
 
-        if (lastHit.point % 10 !== 0) {
-            let i = 1;
-            if ((lastHit.point + i) % 10 !== 0)
-                while (this.enemyAttacks.find(attack => attack.point === lastHit.point + i) && (lastHit.point + i) % 10 !== 0)
-                    i++
-            return lastHit.point + i;
-
-        } else {
-            return lastHit.point - 1;
-        }
-
+        if (moveRight() || moveLeft() || moveUp() || moveDown())
+            return nextNum;
 
     }
 
@@ -326,10 +332,11 @@ class Battleships {
         if (pointHit) {
             point.childNodes[0].classList.add('hit');
             this.consoleText.textContent = this.output.hit('Player 1');
-            this.checkIfShipDown(pointHit, 'Player 1');
-            this.checkIfGameOver(this.allyTargets, 'Player 1');
             if (!this.triggerAlgorithm)
                 this.triggerAlgorithm = true;
+            this.checkIfShipDown(pointHit, 'Player 1');
+            if (this.checkIfGameOver(this.allyTargets, 'Player 1'))
+                return
             this.enemyAttacks.push({point: pointNum, hit: true})
         } else {
             point.childNodes[0].classList.add('miss');
@@ -337,10 +344,6 @@ class Battleships {
             this.enemyAttacks.push({point: pointNum, hit: false})
         }
 
-        console.log(this.allyTargets)
-
-
-        console.log("I play");
         this.bottomBoard.addEventListener('mouseover', this.handleAllyTurn);
     }
 
@@ -353,7 +356,9 @@ class Battleships {
         if (ships.every(ship => ship.space.every(point => [...point.childNodes[0].classList].includes('hit')))) {
             this.bottomBoard.removeEventListener('mouseover', this.handleAllyTurn);
             this.consoleText.textContent = this.output.lost(player);
+            return true;
         }
+        return false;
     }
 
     placeOnMyOwn() {
@@ -425,6 +430,7 @@ class Battleships {
     }
 
     reset() {
+        this.bottomBoard.removeEventListener('mouseover', this.handleAllyTurn);
         this.startGameBtn.style.display = 'flow';
         this.pmoBtn.style.display = 'none';
         this.randomBtn.style.display = 'none';
@@ -435,6 +441,8 @@ class Battleships {
         this.consoleText.textContent = this.output.welcome;
         this.enemyTargets = [];
         this.allyTargets = [];
+        this.enemyAttacks = [];
+        this.triggerAlgorithm = false;
         this.topBoard.innerHTML = '';
         this.bottomBoard.innerHTML = '';
         const HTMLelement = `
