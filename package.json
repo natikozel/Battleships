@@ -1,12 +1,15 @@
 {
   "name": "battleships",
   "version": "1.0.0",
-  "main": "script.js",
+  "main": "src/script.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Netanel Kozel",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^20.9.3"
+  }
 }
